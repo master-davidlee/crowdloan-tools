@@ -1,5 +1,5 @@
 // Import
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider} from '@polkadot/api';
 import {u8aToHex} from '@polkadot/util';
 import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
 
@@ -11,11 +11,13 @@ const args = yargs.options({
     'parachain-id': { type: 'number', demandOption: true, alias: 'p' },
     'ws-provider': {type: 'string', demandOption: true, alias: 'w'},
     'output-dir': {type: 'string', demandOption: true, alias: 'o'},
-    'address': {type: 'string', demandOption: false, alias: 'a'}
+    'address': {type: 'string', demandOption: false, alias: 'a'},
+    'set-ss58-format':{ type: 'number', demandOption: false, alias: 's' },
   }).argv;
 
 // Construct
 const wsProvider = new WsProvider(args['ws-provider']);
+
 
 async function main () {
     const api = await ApiPromise.create({ provider: wsProvider });
@@ -35,7 +37,13 @@ async function main () {
     var concatArray = new Uint8Array([ ...bytes, ...array]);
     let child_encoded_bytes = u8aToHex(new TextEncoder().encode(":child_storage:default:"));
     let crowdloan_key = child_encoded_bytes + blake2AsHex(concatArray, 256).substring(2);
-    let network_prefix = (await api.consts.system.ss58Prefix.toNumber());
+    let network_prefix;
+    if (args["set-ss58-format"]){
+        network_prefix = args["set-ss58-format"];
+    }else{
+        network_prefix = (await api.consts.system.ss58Prefix.toNumber());
+    }
+    console.log(network_prefix);
     let all_keys = await api.rpc.childstate.getKeys(crowdloan_key, null, parentHash) as any;
 
     // Third we get all the keys for that particular crowdloan key
