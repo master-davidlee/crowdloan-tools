@@ -51,6 +51,7 @@ async function main () {
     else{
         all_keys = await api.rpc.childstate.getKeys(crowdloan_key, null, parentHash) as any;
     }
+    console.log(all_keys+"from_safe_getter!!!!!!!!!!");
 
     // Third we get all the keys for that particular crowdloan key
     let address_per_movr = {

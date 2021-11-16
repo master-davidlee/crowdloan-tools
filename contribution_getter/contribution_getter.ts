@@ -12,7 +12,7 @@ const args = yargs.options({
     'ws-provider': {type: 'string', demandOption: true, alias: 'w'},
     'output-dir': {type: 'string', demandOption: true, alias: 'o'},
     'address': {type: 'string', demandOption: false, alias: 'a'},
-    'set-ss58-format':{ type: 'number', demandOption: false, alias: 's' },
+    'set-ss58-format':{ type: 'number', demandOption: false, alias: 'f' },
   }).argv;
 
 // Construct
@@ -45,7 +45,7 @@ async function main () {
     }
     console.log(network_prefix);
     let all_keys = await api.rpc.childstate.getKeys(crowdloan_key, null, parentHash) as any;
-
+    console.log(all_keys+"from getter");
     // Third we get all the keys for that particular crowdloan key
     let json = {
         "total_raised" : 0n,
